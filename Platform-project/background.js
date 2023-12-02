@@ -8,7 +8,10 @@ class Layer {
         this.y = 0;
     }
     update(){
-        if(this.x < -this.width) this.x = 0;
+        if((this.game.player.vy !== 0 || this.game.player.vx !== 0)){
+            this.x -= this.game.player.x + this.x;
+            this.y -= this.game.player.y + this.y;
+            }
     }
     draw(context){
         context.drawImage(this.image, this.x, this.y, this.width, this.height);
@@ -18,8 +21,8 @@ class Layer {
 export class Background {
     constructor(game){
         this.game = game;
-        this.width = 1692;
-        this.height = 1060;
+        this.width = 846;
+        this.height = 530;
         this.layer1Image = document.getElementById('background');
         this.layer1 = new Layer(this.game, this.width, this.height, this.layer1Image);
         this.backgroundLayers = [this.layer1];
