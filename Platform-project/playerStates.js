@@ -1,5 +1,3 @@
-// import { Dust, Fire, Splash } from "./particles.js";
-
 const states = {
     IDLE_LEFT: 0,
     IDLE_RIGHT: 1,
@@ -217,10 +215,8 @@ export class Attacking extends State {
         this.game.player.frameX = 0;
         this.game.player.maxFrame = 11;
         this.game.player.frameY = 0;
-        this.game.player.fps = 20;
     }
     handleInput(input){
-        // this.game.particles.unshift(new Fire(this.game, this.game.player.x + this.game.player.width * 0.5, this.game.player.y + this.game.player.height * 0.5));
         if(this.game.player.frameX >= 11 && this.game.player.onGround()){
             this.game.player.setState(states.RUNNING_RIGHT);
         } 
