@@ -6,23 +6,35 @@ class Layer {
         this.image = image;
         this.x = 0;
         this.y = 0;
+        this.cameraScale = 0.6;
+        this.cameraWidth = this.width * this.cameraScale;
+        this.cameraHeight = this.height * this.cameraScale;
+        this.cameraX = 0;
+        this.cameraY = 0;
     }
     update(){
-        if((this.game.player.vy !== 0 || this.game.player.vx !== 0)){
-            this.x -= this.game.player.x + this.x;
-            this.y -= this.game.player.y + this.y;
-            }
+        // Camera Movement
+        this.cameraX = -this.game.width * 0.4 + this.game.player.x;
+        this.cameraY = -this.game.height * 0.4 + this.game.player.y;
+        // Camera Boundaries
+        if(this.cameraX < 0) this.cameraX = 0;
+        if(this.cameraX > this.width - this.cameraWidth) this.cameraX = this.width - this.cameraWidth;
+        // if(this.cameraY < 0) this.cameraY = 0;
+        if(this.cameraY > this.height - this.cameraHeight) this.cameraY = this.height - this.cameraHeight;
     }
     draw(context){
-        context.drawImage(this.image, this.x, this.y, this.width, this.height);
+        // context.save();
+        // context.translate(this.cameraX, this.cameraY);
+        context.drawImage(this.image, this.cameraX, this.cameraY, this.cameraWidth, this.cameraHeight, this.x, this.y, this.width, this.height);
+        // context.restore();
     }
 }
 
 export class Background {
     constructor(game){
         this.game = game;
-        this.width = 846;
-        this.height = 530;
+        this.width = this.game.width;
+        this.height = this.game.height;
         this.layer1Image = document.getElementById('background');
         this.layer1 = new Layer(this.game, this.width, this.height, this.layer1Image);
         this.backgroundLayers = [this.layer1];
