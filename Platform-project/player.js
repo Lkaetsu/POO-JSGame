@@ -6,7 +6,7 @@ export class Player {
         this.game = game;
         this.spriteWidth = 160;
         this.spriteHeight = 111;
-        this.scale = 0.75;
+        this.scale = 1;
         this.width = this.spriteWidth * this.scale;
         this.height = this.spriteHeight * this.scale;;
         this.x = 0;
@@ -27,6 +27,8 @@ export class Player {
         this.attackSpeed = 2.5;
         this.states = [new IdleLeft(this.game), new IdleRight(this.game), new RunningLeft(this.game), new RunningRight(this.game), new JumpingLeft(this.game), new JumpingRight(this.game), new FallingLeft(this.game), new FallingRight(this.game), new Hit(this.game), new Attacking(this.game)];
         this.currentState = null;
+        this.directions = ['left','right'];
+        this.spriteDirection = this.directions[1];
     }
     update(input, deltaTime){
         this.checkCollision();
@@ -36,23 +38,17 @@ export class Player {
         if(input.includes('d') && this.currentState !== this.states[9]) this.vx = this.maxVx;
         else if(input.includes('a') &&  this.currentState !== this.states[9]) this.vx = -this.maxVx;
         else this.vx = 0;
-        // Horizontal Boundaries
-        if(this.x < 0) this.x = 0;
-        if(this.x > this.game.width - this.width) this.x = this.game.width - this.width;
         // Vertical Movement
         this.y += this.vy;
         if(!this.onGround()) this.vy += this.weight;
         else this.vy = 0;
         if(input.includes ('w') && (this.currentState === this.states[4] || this.currentState === this.states[5])){
-            if(this.jumpHeightModifier > this.weight * 0.60){
+            if(this.jumpHeightModifier >= this.weight * 0.60){
                 this.jumpHeightModifier = this.weight * 0.60;
             }
             this.vy -= this.jumpHeightModifier;
             this.jumpHeightModifier += 0.05;
         } else this.jumpHeightModifier = 0;
-        console.log(this.jumpHeightModifier, this.vy);
-        // Vertical Boundaries
-        if(this.y > this.game.height - this.height) this.y = this.game.height - this.height;
         // Attack Speed
         if(this.currentState === this.states[9]) {
             this.frameInterval = 1000/(this.fps * this.attackSpeed);
@@ -77,6 +73,14 @@ export class Player {
     setState(state){
         this.currentState = this.states[state];
         this.currentState.enter();
+    }
+    setDirection(input){
+        if(input.includes('a')){
+            this.spriteDirection = this.directions[0];
+        }
+        else if(input.includes('d')){
+            this.spriteDirection = this.directions[1];
+        }
     }
     checkCollision(){
         this.game.enemies.forEach(enemy => {

@@ -20,6 +20,7 @@ class State {
         if(input.includes('q')){
             this.game.player.setState(states.ATTACKING);
         }
+        this.game.player.setDirection(input);
     }
 }
 
@@ -30,7 +31,7 @@ export class IdleLeft extends State {
     enter(){
         this.game.player.frameX = 0;
         this.game.player.maxFrame = 7;
-        this.game.player.frameY = 5;
+        this.game.player.frameY = 6;
     }
     handleInput(input){
         super.handleInput(input);
@@ -53,7 +54,7 @@ export class IdleRight extends State {
     enter(){
         this.game.player.frameX = 0;
         this.game.player.maxFrame = 7;
-        this.game.player.frameY = 4;
+        this.game.player.frameY = 5;
     }
     handleInput(input){
         super.handleInput(input);
@@ -76,7 +77,7 @@ export class RunningLeft extends State {
     enter(){
         this.game.player.frameX = 0;
         this.game.player.maxFrame = 7;
-        this.game.player.frameY = 9;
+        this.game.player.frameY = 10;
     }
     handleInput(input){
         super.handleInput(input);
@@ -99,7 +100,7 @@ export class RunningRight extends State {
     enter(){
         this.game.player.frameX = 0;
         this.game.player.maxFrame = 7;
-        this.game.player.frameY = 8;
+        this.game.player.frameY = 9;
     }
     handleInput(input){
         super.handleInput(input);
@@ -123,7 +124,7 @@ export class JumpingLeft extends State {
         if(this.game.player.onGround()) this.game.player.vy -= this.game.player.maxVy;
         this.game.player.frameX = 0;
         this.game.player.maxFrame = 1;
-        this.game.player.frameY = 7;
+        this.game.player.frameY = 8;
     }
     handleInput(input){
         super.handleInput(input);
@@ -143,7 +144,7 @@ export class JumpingRight extends State {
         if(this.game.player.onGround()) this.game.player.vy -= this.game.player.maxVy;
         this.game.player.frameX = 0;
         this.game.player.maxFrame = 1;
-        this.game.player.frameY = 6;
+        this.game.player.frameY = 7;
     }
     handleInput(input){
         super.handleInput(input);
@@ -162,7 +163,7 @@ export class FallingLeft extends State {
     enter(){
         this.game.player.frameX = 0;
         this.game.player.maxFrame = 1;
-        this.game.player.frameY = 3;
+        this.game.player.frameY = 4;
     }
     handleInput(input){
         super.handleInput(input);
@@ -179,7 +180,7 @@ export class FallingRight extends State {
     enter(){
         this.game.player.frameX = 0;
         this.game.player.maxFrame = 1;
-        this.game.player.frameY = 2;
+        this.game.player.frameY = 3;
     }
     handleInput(input){
         super.handleInput(input);
@@ -196,7 +197,7 @@ export class Hit extends State {
     enter(){
         this.game.player.frameX = 0;
         this.game.player.maxFrame = 3;
-        this.game.player.frameY = 11;
+        this.game.player.frameY = 12;
     }
     handleInput(input){
         if(this.game.player.frameX >= 10 && this.game.player.onGround()){
@@ -214,16 +215,28 @@ export class Attacking extends State {
     enter(){
         this.game.player.frameX = 0;
         this.game.player.maxFrame = 11;
-        this.game.player.frameY = 0;
+        if(this.game.player.spriteDirection === this.game.player.directions[0])
+            this.game.player.frameY = 1;
+        else if(this.game.player.spriteDirection === this.game.player.directions[1])
+            this.game.player.frameY = 0;
     }
     handleInput(input){
-        if(this.game.player.frameX >= 11 && this.game.player.onGround()){
-            this.game.player.setState(states.RUNNING_RIGHT);
-        } 
-        else if(this.game.player.frameX >= 11 && !this.game.player.onGround()){
-            this.game.player.setState(states.FALLING_RIGHT);
+        if(this.game.player.spriteDirection === this.game.player.directions[0]){
+            if(this.game.player.frameX >= 11 && this.game.player.onGround()){
+                this.game.player.setState(states.IDLE_LEFT);
+            } 
+            else if(this.game.player.frameX >= 11 && !this.game.player.onGround()){
+                this.game.player.setState(states.FALLING_LEFT);
+            }
+        } else if(this.game.player.spriteDirection === this.game.player.directions[1]){
+            if(this.game.player.frameX >= 11 && this.game.player.onGround()){
+                this.game.player.setState(states.IDLE_RIGHT);
+            } 
+            else if(this.game.player.frameX >= 11 && !this.game.player.onGround()){
+                this.game.player.setState(states.FALLING_RIGHT);
+            }
         }
-        else if(input.includes('w') && this.game.player.onGround()){
+        if(input.includes('w') && this.game.player.onGround()){
             this.game.player.vy -= this.game.player.maxVy;
         }
         else if(input.includes('d') && this.game.player.onGround()){
