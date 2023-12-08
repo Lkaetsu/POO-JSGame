@@ -6,7 +6,7 @@ class Layer {
         this.image = image;
         this.x = 0;
         this.y = 0;
-        this.cameraScale = 0.6;
+        this.cameraScale = 0.7;
         this.cameraWidth = this.width * this.cameraScale;
         this.cameraHeight = this.height * this.cameraScale;
         this.cameraX = 0;
@@ -23,10 +23,7 @@ class Layer {
         if(this.cameraY > this.height - this.cameraHeight) this.cameraY = this.height - this.cameraHeight;
     }
     draw(context){
-        // context.save();
-        // context.translate(this.cameraX, this.cameraY);
         context.drawImage(this.image, this.cameraX, this.cameraY, this.cameraWidth, this.cameraHeight, this.x, this.y, this.width, this.height);
-        // context.restore();
     }
 }
 
@@ -35,7 +32,7 @@ export class Background {
         this.game = game;
         this.width = this.game.width;
         this.height = this.game.height;
-        this.layer1Image = document.getElementById('background');
+        this.layer1Image = document.getElementById('map1');
         this.layer1 = new Layer(this.game, this.width, this.height, this.layer1Image);
         this.backgroundLayers = [this.layer1];
     }

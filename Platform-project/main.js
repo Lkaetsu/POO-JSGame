@@ -1,7 +1,7 @@
 import { Player } from './player.js';
 import { InputHandler } from './input.js';
 import { Background } from './background.js';
-import { FlyingEnemy, GroundEnemy, ClimbingEnemy } from './enemies.js';
+import { AxeKnightEnemy } from './enemies.js';
 import { UI } from './UI.js';
 
 window.addEventListener('load', function(){
@@ -38,7 +38,7 @@ window.addEventListener('load', function(){
             this.player.update(this.input.keys, deltaTime);
             this.background.update();
             // Handle Enemies
-            this.addEnemy();
+            // this.addEnemy();
             this.enemies.forEach(enemy =>{
                 enemy.update(deltaTime);
             });
@@ -60,9 +60,7 @@ window.addEventListener('load', function(){
             this.UI.draw(context);
         }
         addEnemy(x, y){
-            // if(this.speed > 0 && Math.random() < 0.5) this.enemies.push(new GroundEnemy(this, x, y));
-            // else if(this.speed > 0) this.enemies.push(new ClimbingEnemy(this));
-            // this.enemies.push(new FlyingEnemy(this));
+            this.enemies.push(new AxeKnightEnemy(this, x, y));
         }
     }
     const game = new Game(canvas.width, canvas.height);

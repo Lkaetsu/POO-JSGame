@@ -3,13 +3,13 @@ export class UI {
         this.game = game;
         this.fontSize = 30;
         this.fontFamily = 'Helvetica';
-        // this.livesImage = document.getElementById('lives');
+        this.livesImage = document.getElementById('lives');
     }
     draw(context){
         context.save();
         context.shadowOffsetX = 2;
         context.shadowOffsetY = 2;
-        context.shadowColor = 'white';
+        context.shadowColor = 'gray';
         context.shadowBlur = 0;
         context.font = this.fontSize + 'px ' + this.fontFamily;
         context.textAlign = 'left';
@@ -20,9 +20,9 @@ export class UI {
         context.font = this.fontSize * 0.8 + 'px ' + this.fontFamily;
         context.fillText('Time: ' + (this.game.time * 0.001).toFixed(2), 20, 80);
         // Lives
-        // for(let i = 0; i < this.game.lives; i++){
-        //     context.drawImage(this.livesImage, 25 * i + 20, 95, 25, 25);
-        // }
+        for(let i = 0; i < this.game.lives; i++){
+            context.drawImage(this.livesImage, 10 * i, 95, 25, 25);
+        }
         // Game Over Message
         if(this.game.gameOver){
             context.textAlign = 'center';
