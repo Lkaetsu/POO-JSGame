@@ -24,7 +24,7 @@ export class Player {
         this.vx = 0;
         this.maxVx = 5;
         this.maxVy = 12;
-        this.attackSpeed = 2.5;
+        this.attackSpeed = 3;
         this.states = [new IdleLeft(this.game), new IdleRight(this.game), new RunningLeft(this.game), new RunningRight(this.game), new JumpingLeft(this.game), new JumpingRight(this.game), new FallingLeft(this.game), new FallingRight(this.game), new Hit(this.game), new Attacking(this.game)];
         this.currentState = null;
         this.directions = ['left','right'];
