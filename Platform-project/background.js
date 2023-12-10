@@ -1,3 +1,6 @@
+import { loadStageCollisions } from './collisionBlocks.js';
+import { collision } from './utils.js';
+
 class Layer {
     constructor(game, width, height,  image){
         this.game = game;
@@ -6,11 +9,12 @@ class Layer {
         this.image = image;
         this.x = 0;
         this.y = 0;
-        this.cameraScale = 0.7;
-        this.cameraWidth = this.width * this.cameraScale;
-        this.cameraHeight = this.height * this.cameraScale;
+        this.cameraZoom = 0.7;
+        this.cameraWidth = this.width * this.cameraZoom;
+        this.cameraHeight = this.height * this.cameraZoom;
         this.cameraX = 0;
         this.cameraY = 0;
+        loadStageCollisions(this.game);
     }
     update(){
         // Camera Movement
