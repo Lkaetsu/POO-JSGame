@@ -29,9 +29,13 @@ export class Player {
         this.currentState = null;
         this.directions = ['left','right'];
         this.spriteDirection = this.directions[1];
+        this.hitboxX = this.x + this.width * 0.25;
+        this.hitboxY = this.y + this.height * 0.25;
+        this.hitboxWidth = this.width * 0.4;
+        this.hitboxHeight = this.height * 0.75;
     }
     update(input, deltaTime){
-        this.checkCollision();
+        this.checkEnemyCollision();
         this.currentState.handleInput(input);
         // Horizontal Movement
         this.x += this.vx;
@@ -82,12 +86,12 @@ export class Player {
             this.spriteDirection = this.directions[1];
         }
     }
-    checkCollision(){
+    checkEnemyCollision(){
         this.game.enemies.forEach(enemy => {
-            if( enemy.x < this.x + this.width * 0.4 + this.width * 0.25 &&
-                enemy.x + enemy.width > this.x + this.width * 0.4 &&
-                enemy.y < this.y + this.height * 0.4 + this.height * 0.5 &&
-                enemy.y + enemy.height > this.y + this.height * 0.5)
+            if( enemy.x < this.hitboxX + this.hitboxWidth &&
+                enemy.x + enemy.width > this.hitboxX &&
+                enemy.y < this.hitboxY + this.hitboxHeight &&
+                enemy.y + enemy.height > this.hitboxY)
             {
                 enemy.markedForDeletion = true;
                 this.game.collisions.push(new CollisionAnimation(this.game, enemy.x + enemy.width * 0.5, enemy.y + enemy.height * 0.5));
@@ -102,4 +106,36 @@ export class Player {
             }
         })
     }
+    // checkForObjectCollisions() {
+    //     for (let i = 0; i < this.collisionBlocks.length; i++) {
+    //       const collisionBlock = this.collisionBlocks[i]
+    
+    //       if (
+    //         collision({
+    //           object1: this.hitbox,
+    //           object2: collisionBlock,
+    //         })
+    //       ) {
+    //         if (this.velocity.x > 0) {
+    //           this.velocity.x = 0
+    
+    //           const offset =
+    //             this.hitbox.position.x - this.position.x + this.hitbox.width
+    
+    //           this.position.x = collisionBlock.position.x - offset - 0.01
+    //           break
+    //         }
+    
+    //  if (this.velocity.x < 0) {
+    //           this.velocity.x = 0
+    
+    //           const offset = this.hitbox.position.x - this.position.x
+    
+    //           this.position.x =
+    //             collisionBlock.position.x + collisionBlock.width - offset + 0.01
+    //           break
+    //         }
+    //       }
+    //     }
+    //   }
 }

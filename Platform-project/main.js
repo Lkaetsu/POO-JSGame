@@ -14,12 +14,14 @@ window.addEventListener('load', function(){
         constructor(width, height){
             this.width = width;
             this.height = height;
+            this.stages = ['map1','map2'];
+            this.currentStage = this.stages[0];
+            this.floorcollisions2D = [];
             this.background = new Background(this);
             this.player = new Player(this);
             this.input = new InputHandler(this);
             this.UI = new UI(this);
             this.enemies = [];
-            this.collisions = [];
             this.debug = false;
             this.score = 0;
             this.winningScore = 40;
@@ -38,15 +40,23 @@ window.addEventListener('load', function(){
             this.player.update(this.input.keys, deltaTime);
             this.background.update();
             // Handle Enemies
-            // this.addEnemy();
+            // this.addEnemies();
             this.enemies.forEach(enemy =>{
                 enemy.update(deltaTime);
             });
-            this.enemies = this.enemies.filter(enemy => !enemy.markedForDeletion);
-            this.collisions.forEach((collision) => {
-                collision.update(deltaTime);
-                this.collisions = this.collisions.filter(collision => !collision.markedForDeletion);
+            this.floorcollisions2D.forEach(c => {
+                c.update();
+                if (this.input.keys.includes('d')) {
+                    c.vx = -this.player.maxVx;
+                  } else if(this.input.keys.includes('a')){
+                    c.vx = this.player.maxVx;
+                    }
+                //  else if(this.input.keys.includes('w')){
+                //     c.vy = this.player.maxVy;
+                //} 
+                  else  c.vx = 0;
             });
+            this.enemies = this.enemies.filter(enemy => !enemy.markedForDeletion);
         }
         draw(context){
             this.background.draw(context);
@@ -54,13 +64,16 @@ window.addEventListener('load', function(){
             this.enemies.forEach(enemy =>{
                 enemy.draw(context);
             });
-            this.collisions.forEach((collision, index) => {
-                collision.draw(context);
-            })
+            if(this.debug === true){
+                this.floorcollisions2D.forEach((collision) => {
+                    collision.draw(context);
+                });
+            }
             this.UI.draw(context);
+            // console.log(this.player.x, this.player.y)
         }
-        addEnemy(x, y){
-            this.enemies.push(new AxeKnightEnemy(this, x, y));
+        addEnemies(){
+            this.enemies.push(new AxeKnightEnemy(this, 0, 0));
         }
     }
     const game = new Game(canvas.width, canvas.height);
