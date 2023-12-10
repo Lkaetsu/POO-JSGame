@@ -1,5 +1,6 @@
 import { IdleLeft, IdleRight, RunningLeft, RunningRight, JumpingLeft, JumpingRight, FallingLeft, FallingRight, Hit, Attacking } from "./playerStates.js";
 import { CollisionAnimation } from "./collisionAnimation.js";
+import { collision } from "./utils.js";
 
 export class Player {
     constructor(game){
@@ -8,7 +9,7 @@ export class Player {
         this.spriteHeight = 111;
         this.scale = 1;
         this.width = this.spriteWidth * this.scale;
-        this.height = this.spriteHeight * this.scale;;
+        this.height = this.spriteHeight * this.scale;
         this.x = 0;
         this.y = 0;
         this.vy = 0;
@@ -33,6 +34,7 @@ export class Player {
         this.hitboxY = this.y + this.height * 0.25;
         this.hitboxWidth = this.width * 0.4;
         this.hitboxHeight = this.height * 0.75;
+        this.hasTouchedTheGround = false;
     }
     update(input, deltaTime){
         this.checkEnemyCollision();
@@ -53,6 +55,21 @@ export class Player {
             this.vy -= this.jumpHeightModifier;
             this.jumpHeightModifier += 0.05;
         } else this.jumpHeightModifier = 0;
+        // Collision box Movement
+        // if(this.onGround())  this.hasTouchedTheGround = true;
+        // this.game.floorcollisions2D.forEach(collisionBlock => {
+        //     collisionBlock.update();
+        //     if (input.includes('d')) {
+        //         collisionBlock.vx = -this.maxVx;
+        //     } else if(input.includes('a')){
+        //         collisionBlock.vx = this.maxVx;
+        //     } else  collisionBlock.vx = 0;
+        //     if(this.vy !== 0 && this.hasTouchedTheGround){
+        //         collisionBlock.vy = -this.vy;
+        //     } else collisionBlock.vy = 0;
+        //     if(this.onGround())  collisionBlock.y = collisionBlock.initialY;
+        //     this.checkForObjectCollisions(collisionBlock);
+        // });
         // Attack Speed
         if(this.currentState === this.states[9]) {
             this.frameInterval = 1000/(this.fps * this.attackSpeed);
@@ -94,7 +111,6 @@ export class Player {
                 enemy.y + enemy.height > this.hitboxY)
             {
                 enemy.markedForDeletion = true;
-                this.game.collisions.push(new CollisionAnimation(this.game, enemy.x + enemy.width * 0.5, enemy.y + enemy.height * 0.5));
                 if( this.currentState === this.states[9]){
                         this.game.score++;
                     } else {
@@ -106,13 +122,17 @@ export class Player {
             }
         })
     }
-    // checkForObjectCollisions() {
-    //     for (let i = 0; i < this.collisionBlocks.length; i++) {
-    //       const collisionBlock = this.collisionBlocks[i]
-    
+    checkForObjectCollisions(collisionBlock) {
+    //     if(collision({object1: [this.hitboxX, this.hitboxY, this.hitboxWidth, this.hitboxHeight], object2: collisionBlock}))
+    //         if(this.vy > 0){
+    //             this.vy = 0;
+    //             const offset = this.hitboxY - this.y + this.hitboxHeight;
+    //             this.y = collisionBlock.y - offset - 0.01;
+    //             console.log(offset);
+    //         }
     //       if (
     //         collision({
-    //           object1: this.hitbox,
+    //           object1: [this.hitboxX, this.hitboxY, this.hitboxWidth, this.hitboxHeight],
     //           object2: collisionBlock,
     //         })
     //       ) {
@@ -120,22 +140,21 @@ export class Player {
     //           this.velocity.x = 0
     
     //           const offset =
-    //             this.hitbox.position.x - this.position.x + this.hitbox.width
+    //             this.hitboxX - this.x + this.hitboxWidth
     
-    //           this.position.x = collisionBlock.position.x - offset - 0.01
+    //           this.x = collisionBlock.x - offset - 0.01
     //           break
     //         }
     
     //  if (this.velocity.x < 0) {
     //           this.velocity.x = 0
     
-    //           const offset = this.hitbox.position.x - this.position.x
+    //           const offset = this.hitboxX - this.x
     
-    //           this.position.x =
-    //             collisionBlock.position.x + collisionBlock.width - offset + 0.01
+    //           this.x =
+    //             collisionBlock.x + collisionBlock.width - offset + 0.01
     //           break
-    //         }
-    //       }
     //     }
-    //   }
+    //     }
+    }
 }

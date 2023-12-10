@@ -22,7 +22,7 @@ window.addEventListener('load', function(){
             this.input = new InputHandler(this);
             this.UI = new UI(this);
             this.enemies = [];
-            this.debug = false;
+            this.debug = true;
             this.score = 0;
             this.winningScore = 40;
             this.fontColor = 'black';
@@ -44,21 +44,11 @@ window.addEventListener('load', function(){
             this.enemies.forEach(enemy =>{
                 enemy.update(deltaTime);
             });
-            this.floorcollisions2D.forEach(c => {
-                c.update();
-                if (this.input.keys.includes('d')) {
-                    c.vx = -this.player.maxVx;
-                  } else if(this.input.keys.includes('a')){
-                    c.vx = this.player.maxVx;
-                    }
-                //  else if(this.input.keys.includes('w')){
-                //     c.vy = this.player.maxVy;
-                //} 
-                  else  c.vx = 0;
-            });
             this.enemies = this.enemies.filter(enemy => !enemy.markedForDeletion);
         }
         draw(context){
+            // context.save();
+            // context.scale(2,2);
             this.background.draw(context);
             this.player.draw(context);
             this.enemies.forEach(enemy =>{
@@ -71,6 +61,7 @@ window.addEventListener('load', function(){
             }
             this.UI.draw(context);
             // console.log(this.player.x, this.player.y)
+            // context.restore()
         }
         addEnemies(){
             this.enemies.push(new AxeKnightEnemy(this, 0, 0));

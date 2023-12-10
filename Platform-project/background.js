@@ -1,5 +1,4 @@
 import { loadStageCollisions } from './collisionBlocks.js';
-import { collision } from './utils.js';
 
 class Layer {
     constructor(game, width, height,  image){
@@ -9,9 +8,8 @@ class Layer {
         this.image = image;
         this.x = 0;
         this.y = 0;
-        this.cameraZoom = 0.7;
-        this.cameraWidth = this.width * this.cameraZoom;
-        this.cameraHeight = this.height * this.cameraZoom;
+        this.cameraWidth = this.width;
+        this.cameraHeight = this.height;
         this.cameraX = 0;
         this.cameraY = 0;
         loadStageCollisions(this.game);
@@ -25,8 +23,11 @@ class Layer {
         if(this.cameraX > this.width - this.cameraWidth) this.cameraX = this.width - this.cameraWidth;
         // if(this.cameraY < 0) this.cameraY = 0;
         if(this.cameraY > this.height - this.cameraHeight) this.cameraY = this.height - this.cameraHeight;
+        console.log(this.cameraX, this.cameraY, this.cameraWidth, this.cameraHeight);
+        // console.log(this.x, this.y, this.width, this.height);
     }
     draw(context){
+        // context.translate(this.cameraX, this.cameraY);
         context.drawImage(this.image, this.cameraX, this.cameraY, this.cameraWidth, this.cameraHeight, this.x, this.y, this.width, this.height);
     }
 }
