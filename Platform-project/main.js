@@ -7,8 +7,8 @@ import { UI } from './UI.js';
 window.addEventListener('load', function(){
     const canvas = document.getElementById('canvas1');
     const ctx = canvas.getContext('2d');
-    canvas.width = 1600;         //846
-    canvas.height = 320;         //530
+    canvas.width = this.innerWidth;
+    canvas.height = this.innerHeight;
 
     class Game {
         constructor(width, height){
@@ -47,8 +47,8 @@ window.addEventListener('load', function(){
             this.enemies = this.enemies.filter(enemy => !enemy.markedForDeletion);
         }
         draw(context){
-            // context.save();
-            // context.scale(2,2);
+            context.save();
+            context.scale(1.8,1.8);
             this.background.draw(context);
             this.player.draw(context);
             this.enemies.forEach(enemy =>{
@@ -60,8 +60,8 @@ window.addEventListener('load', function(){
                 });
             }
             this.UI.draw(context);
-            // console.log(this.player.x, this.player.y)
-            // context.restore()
+            console.log(this.player.x, this.player.y)
+            context.restore()
         }
         addEnemies(){
             this.enemies.push(new AxeKnightEnemy(this, 0, 0));
