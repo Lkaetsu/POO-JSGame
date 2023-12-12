@@ -130,6 +130,7 @@ export class Player {
                     this.setState(8, 0);
                     this.game.score--;
                     this.game.lives--;
+                    this.game.setStage(this.game.currentStage);
                     if(this.game.lives <= 0) this.game.gameOver = true;
                 }
             }

@@ -56,14 +56,17 @@ window.addEventListener('load', function(){
                 enemy.update(deltaTime);
             });
             this.enemies = this.enemies.filter(enemy => !enemy.markedForDeletion);
-            if(this.player.x === this.width*0.5){
-                this.setStage();
+            if(this.player.x === this.width * 0.5 && this.currentStage !== 4){
+                this.setStage(this.currentStage + 1);
+            } else if(this.player.x === this.width * 0.5 && this.currentStage === 4){
+                this.score += this.winningScore + 1;
+                this.gameOver = true;
             }
             // console.log(this.player.x, this.player.y)
         }
         draw(context){
             context.save();
-            context.scale(2.2*0.75,2.2*0.75);
+            context.scale(1.65,1.65);
             this.background.draw(context);
             this.player.draw(context);
             this.enemies.forEach(enemy =>{
@@ -77,13 +80,11 @@ window.addEventListener('load', function(){
             this.UI.draw(context);
             context.restore()
         }
-        setStage(){
-            if(this.currentStage !== 4){
-                this.currentStage++;
-                if(this.currentStage === 4) {
-                    this.music.pause();
-                    this.music2.play();
-                }
+        setStage(stage){
+            this.currentStage = stage;
+            if(this.currentStage === 4) {
+                this.music.pause();
+                this.music2.play();
             }
             this.floorcollisions2D = [];
             this.enemies = []
