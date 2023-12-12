@@ -16,7 +16,7 @@ class Layer {
     }
     update(){
         // Camera Movement
-        this.cameraX = -this.game.width * 0.0001 + this.game.player.x;
+        this.cameraX = -this.game.width * 0.0001 + this.game.player.x ;
         this.cameraY = -this.game.height * 0.0001 + this.game.player.y;
         // Camera Boundaries
         if(this.cameraX < 0) this.cameraX = 0;
@@ -25,7 +25,7 @@ class Layer {
         if(this.cameraY > this.height - this.cameraHeight) this.cameraY = this.height - this.cameraHeight;
     }
     draw(context){
-        context.drawImage(this.image, this.cameraX , this.cameraY+80, this.cameraWidth, this.cameraHeight, this.x, this.y, this.width, this.height);
+        context.drawImage(this.image, this.cameraX , this.cameraY + 80, this.cameraWidth, this.cameraHeight, this.x, this.y, this.width, this.height);
     }
 }
 
@@ -34,9 +34,9 @@ export class Background {
         this.game = game;
         this.width = this.game.width;
         this.height = this.game.height;
-        this.layer1Image = document.getElementById(this.game.currentStage);
-        this.layer1 = new Layer(this.game, this.width, this.height, this.layer1Image);
-        this.backgroundLayers = [this.layer1];
+        this.layerImage = document.getElementById('map' + this.game.currentStage);
+        this.layer = new Layer(this.game, this.width, this.height, this.layerImage);
+        this.backgroundLayers = [this.layer];
     }
     update(){
         this.backgroundLayers.forEach(layer => {

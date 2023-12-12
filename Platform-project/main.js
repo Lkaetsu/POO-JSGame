@@ -4,6 +4,11 @@ import { Background } from './background.js';
 import { AxeKnightEnemy } from './enemies.js';
 import { UI } from './UI.js';
 
+// var music = document.getElementById("audio");
+// music.loop = true;
+// music.volume = 1; 
+// music.play();
+
 window.addEventListener('load', function(){
     const canvas = document.getElementById('canvas1');
     const ctx = canvas.getContext('2d');
@@ -14,15 +19,15 @@ window.addEventListener('load', function(){
         constructor(width, height){
             this.width = width;
             this.height = height;
-            this.stages = ["map1", "map2" ,"map3", "map4"];
+            this.stages = [1, 2, 3, 4];
             this.currentStage = this.stages[0];
+            this.enemies = [];
+            this.player = new Player(this);
             this.floorcollisions2D = [];
             this.background = new Background(this);
-            this.player = new Player(this);
             this.input = new InputHandler(this);
             this.UI = new UI(this);
-            this.enemies = [];
-            this.debug = true;
+            this.debug = false;
             this.score = 0;
             this.winningScore = 40;
             this.fontColor = 'black';
@@ -32,10 +37,13 @@ window.addEventListener('load', function(){
             this.lives = 3;
             this.player.currentState = this.player.states[1];
             this.player.currentState.enter();
-            this.music = music;
+            this.music = document.getElementById("audio");
             this.music.loop = true;
-            this.music.volume = 0.05;
+            this.music.volume = 1; 
             this.music.play();
+            this.music2 = document.getElementById("audio2");
+            this.music2.loop = true;
+            this.music2.volume = 1; 
         }
         update(deltaTime){
             //Timer
@@ -44,16 +52,18 @@ window.addEventListener('load', function(){
             this.player.update(this.input.keys, deltaTime);
             this.background.update();
             // Handle Enemies
-            // this.addEnemies();
             this.enemies.forEach(enemy =>{
                 enemy.update(deltaTime);
             });
             this.enemies = this.enemies.filter(enemy => !enemy.markedForDeletion);
+            if(this.player.x === this.width*0.5){
+                this.setStage();
+            }
             // console.log(this.player.x, this.player.y)
         }
         draw(context){
             context.save();
-            context.scale(2,2);
+            context.scale(2.2*0.75,2.2*0.75);
             this.background.draw(context);
             this.player.draw(context);
             this.enemies.forEach(enemy =>{
@@ -67,8 +77,18 @@ window.addEventListener('load', function(){
             this.UI.draw(context);
             context.restore()
         }
-        addEnemies(){
-            this.enemies.push(new AxeKnightEnemy(this, 0, 0));
+        setStage(){
+            if(this.currentStage !== 4){
+                this.currentStage++;
+                if(this.currentStage === 4) {
+                    this.music.pause();
+                    this.music2.play();
+                }
+            }
+            this.floorcollisions2D = [];
+            this.enemies = []
+            this.background = new Background(this);
+            this.player = new Player(this);
         }
     }
     const game = new Game(canvas.width, canvas.height);
