@@ -51,29 +51,6 @@ export class Idle extends State {
     }
 }
 
-// export class IdleRight extends State {
-//     constructor(game){
-//         super('IDLE_RIGHT', game);
-//     }
-//     enter(){
-//         this.game.player.frameX = 0;
-//         this.game.player.maxFrame = 7;
-//         this.game.player.frameY = 5;
-//     }
-//     handleInput(input){
-//         super.handleInput(input);
-//         if(input.includes('d')){
-//             this.game.player.setState(states.RUNNING_RIGHT);
-//         }
-//         else if(input.includes('a')){
-//             this.game.player.setState(states.RUNNING_LEFT);
-//         }
-//         if(input.includes('w')){
-//             this.game.player.setState(states.JUMPING_RIGHT);
-//         }
-//     }
-// }
-
 export class RunningLeft extends State {
     constructor(game){
         super('RUNNING_LEFT', game);
@@ -217,6 +194,7 @@ export class Attacking extends State {
         super('ATTACKING', game);
     }
     enter(){
+        this.game.player.isAttacking = true;
         this.game.player.frameX = 0;
         this.game.player.maxFrame = 11;
         if(this.game.player.spriteDirection === this.game.player.directions[0])
@@ -226,25 +204,22 @@ export class Attacking extends State {
     }
     handleInput(input){
         if(this.game.player.frameX >= 11 && this.game.player.onGround()){
+            this.game.player.isAttacking = false;
             this.game.player.setState(states.IDLE);
         } 
         if(this.game.player.spriteDirection === this.game.player.directions[0]){
             if(this.game.player.frameX >= 11 && !this.game.player.onGround()){
+                this.game.player.isAttacking = false;
                 this.game.player.setState(states.FALLING_LEFT);
             }
         } else if(this.game.player.spriteDirection === this.game.player.directions[1]){
             if(this.game.player.frameX >= 11 && !this.game.player.onGround()){
+                this.game.player.isAttacking = false;
                 this.game.player.setState(states.FALLING_RIGHT);
             }
         }
         if(input.includes('w') && this.game.player.onGround()){
             this.game.player.vy -= this.game.player.maxVy;
-        }
-        else if(input.includes('d') && this.game.player.onGround()){
-            this.game.player.vx += this.game.player.maxVx * 0.5;
-        }
-        else if(input.includes('a') && this.game.player.onGround()){
-            this.game.player.vx -= this.game.player.maxVx * 0.5;
         }
     }
 }

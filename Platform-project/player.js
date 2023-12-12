@@ -9,8 +9,8 @@ export class Player {
         this.scale = 0.75;
         this.width = this.spriteWidth * this.scale;
         this.height = this.spriteHeight * this.scale;
-        this.x = 0;
-        this.y = 0;
+        this.x = 50;
+        this.y = 150;
         this.vy = 0;
         this.weight = 0.65;
         this.jumpHeightModifier = 0;
@@ -34,17 +34,25 @@ export class Player {
             y: this.y + this.height * 0.4,
             width: this.width * 0.25,
             height: this.height * 0.55,
+        };
+        this.isAttacking = false;
+        this.attackBox = { offset: {}, width: undefined, height: undefined },
+        this.attackBox = {
+        position: {
+        x: this.x,
+        y: this.y
         }
+        };
     }
     update(input, deltaTime){
-        console.log(this.onGround());
+        // console.log(this.isAttacking);
         this.checkEnemyCollision();
         this.currentState.handleInput(input);
         // Horizontal Movement
         this.x += this.vx;
         this.hitbox.x = this.x + this.width * 0.4;
-        if(input.includes('d') && this.currentState !== this.states[9]) this.vx = this.maxVx;
-        else if(input.includes('a') &&  this.currentState !== this.states[9]) this.vx = -this.maxVx;
+        if(input.includes('d') && this.currentState !== this.states[7]) this.vx = this.maxVx;
+        else if(input.includes('a') &&  this.currentState !== this.states[7]) this.vx = -this.maxVx;
         else this.vx = 0;
         // Vertical Movement
         this.y += this.vy;
@@ -58,6 +66,10 @@ export class Player {
             this.vy -= this.jumpHeightModifier;
             this.jumpHeightModifier += 0.05;
         } else this.jumpHeightModifier = 0;
+        if(this.y === 1000){
+            this.game.lives--;
+            if(this.game.lives <= 0) this.game.gameOver = true;
+        }
         // Collision box Movement
         this.game.floorcollisions2D.forEach(collisionBlock => {
             collisionBlock.update();
@@ -69,7 +81,7 @@ export class Player {
             this.handleObjectCollisions(collisionBlock);
         });
         // Attack Speed
-        if(this.currentState === this.states[9]) {
+        if(this.currentState === this.states[8]) {
             this.frameInterval = 1000/(this.fps * this.attackSpeed);
         }
         else this.frameInterval = 1000/this.fps;
@@ -114,29 +126,25 @@ export class Player {
                 enemy.y < this.hitbox.y + this.hitbox.height &&
                 enemy.y + enemy.height > this.hitbox.x)
             {
-                enemy.markedForDeletion = true;
-                if( this.currentState === this.states[9]){
-                        this.game.score++;
-                    } else {
-                        this.setState(8, 0);
-                        this.game.score--;
-                        this.game.lives--;
-                        if(this.game.lives <= 0) this.game.gameOver = true;
-                    }
+                // enemy.markedForDeletion = true;
+                this.setState(8, 0);
+                this.game.score--;
+                this.game.lives--;
+                if(this.game.lives <= 0) this.game.gameOver = true;
             }
-        })
+        });
     }
     handleObjectCollisions(collisionBlock) {
         if(collision({object1: this.hitbox, object2: collisionBlock})){
             if(this.vy > 0){
                 this.vy = 0;
                 const offset = this.hitbox.y - this.y + this.hitbox.height;
-                this.y = collisionBlock.y - offset - 0.5;
+                this.y = collisionBlock.y - offset - 10;
             }
             if(this.vy < 0){
                 this.vy = 0;
                 const offset = this.hitbox.y - this.y;
-                this.y = collisionBlock.y - collisionBlock.height - offset + 0.5;
+                this.y = collisionBlock.y - collisionBlock.height - offset + 0.1;
             }
             // if(this.vx > 0){
             //     this.vx = 0;

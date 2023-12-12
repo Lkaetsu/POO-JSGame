@@ -14,8 +14,8 @@ window.addEventListener('load', function(){
         constructor(width, height){
             this.width = width;
             this.height = height;
-            this.stages = ['map1','map2'];
-            this.currentStage = this.stages[1];
+            this.stages = ["map1", "map2" ,"map3", "map4"];
+            this.currentStage = this.stages[0];
             this.floorcollisions2D = [];
             this.background = new Background(this);
             this.player = new Player(this);
@@ -49,6 +49,7 @@ window.addEventListener('load', function(){
                 enemy.update(deltaTime);
             });
             this.enemies = this.enemies.filter(enemy => !enemy.markedForDeletion);
+            // console.log(this.player.x, this.player.y)
         }
         draw(context){
             context.save();
@@ -64,7 +65,6 @@ window.addEventListener('load', function(){
                 });
             }
             this.UI.draw(context);
-            console.log(this.player.x, this.player.y)
             context.restore()
         }
         addEnemies(){
