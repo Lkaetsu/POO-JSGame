@@ -1,14 +1,13 @@
 const states = {
-    IDLE_LEFT: 0,
-    IDLE_RIGHT: 1,
-    RUNNING_LEFT: 2,
-    RUNNING_RIGHT: 3,
-    JUMPING_LEFT: 4,
-    JUMPING_RIGHT: 5,
-    FALLING_LEFT: 6,
-    FALLING_RIGHT: 7,
-    HIT: 8,
-    ATTACKING: 9
+    IDLE: 0,
+    RUNNING_LEFT: 1,
+    RUNNING_RIGHT: 2,
+    JUMPING_LEFT: 3,
+    JUMPING_RIGHT: 4,
+    FALLING_LEFT: 5,
+    FALLING_RIGHT: 6,
+    HIT: 7,
+    ATTACKING: 8
 };
 
 class State {
@@ -24,14 +23,17 @@ class State {
     }
 }
 
-export class IdleLeft extends State {
+export class Idle extends State {
     constructor(game){
-        super('IDLE_LEFT', game);
+        super('IDLE', game);
     }
     enter(){
         this.game.player.frameX = 0;
         this.game.player.maxFrame = 7;
-        this.game.player.frameY = 6;
+        if(this.game.player.spriteDirection === this.game.player.directions[0])
+            this.game.player.frameY = 6;
+        else if(this.game.player.spriteDirection === this.game.player.directions[1])
+            this.game.player.frameY = 5;
     }
     handleInput(input){
         super.handleInput(input);
@@ -41,34 +43,36 @@ export class IdleLeft extends State {
         else if(input.includes('a')){
             this.game.player.setState(states.RUNNING_LEFT);
         }
-        if(input.includes('w')){
+        if(input.includes('w') && this.game.player.spriteDirection === this.game.player.directions[0]){
             this.game.player.setState(states.JUMPING_LEFT);
-        }
-    }
-}
-
-export class IdleRight extends State {
-    constructor(game){
-        super('IDLE_RIGHT', game);
-    }
-    enter(){
-        this.game.player.frameX = 0;
-        this.game.player.maxFrame = 7;
-        this.game.player.frameY = 5;
-    }
-    handleInput(input){
-        super.handleInput(input);
-        if(input.includes('d')){
-            this.game.player.setState(states.RUNNING_RIGHT);
-        }
-        else if(input.includes('a')){
-            this.game.player.setState(states.RUNNING_LEFT);
-        }
-        if(input.includes('w')){
+        } else if(input.includes('w') && this.game.player.spriteDirection === this.game.player.directions[1]){
             this.game.player.setState(states.JUMPING_RIGHT);
         }
     }
 }
+
+// export class IdleRight extends State {
+//     constructor(game){
+//         super('IDLE_RIGHT', game);
+//     }
+//     enter(){
+//         this.game.player.frameX = 0;
+//         this.game.player.maxFrame = 7;
+//         this.game.player.frameY = 5;
+//     }
+//     handleInput(input){
+//         super.handleInput(input);
+//         if(input.includes('d')){
+//             this.game.player.setState(states.RUNNING_RIGHT);
+//         }
+//         else if(input.includes('a')){
+//             this.game.player.setState(states.RUNNING_LEFT);
+//         }
+//         if(input.includes('w')){
+//             this.game.player.setState(states.JUMPING_RIGHT);
+//         }
+//     }
+// }
 
 export class RunningLeft extends State {
     constructor(game){
@@ -82,7 +86,7 @@ export class RunningLeft extends State {
     handleInput(input){
         super.handleInput(input);
         if(!input.includes('a')){
-            this.game.player.setState(states.IDLE_LEFT);
+            this.game.player.setState(states.IDLE);
         }
         else if(input.includes('d')){
             this.game.player.setState(states.RUNNING_RIGHT);
@@ -105,7 +109,7 @@ export class RunningRight extends State {
     handleInput(input){
         super.handleInput(input);
         if(!input.includes('d')){
-            this.game.player.setState(states.IDLE_RIGHT);
+            this.game.player.setState(states.IDLE);
         }
         else if(input.includes('a') && !input.includes('d')){
             this.game.player.setState(states.RUNNING_LEFT);
@@ -168,7 +172,7 @@ export class FallingLeft extends State {
     handleInput(input){
         super.handleInput(input);
         if(this.game.player.onGround()){
-            this.game.player.setState(states.IDLE_LEFT);
+            this.game.player.setState(states.IDLE);
         }
     }
 }
@@ -185,7 +189,7 @@ export class FallingRight extends State {
     handleInput(input){
         super.handleInput(input);
         if(this.game.player.onGround()){
-            this.game.player.setState(states.IDLE_RIGHT);
+            this.game.player.setState(states.IDLE);
         }
     }
 }
@@ -201,7 +205,7 @@ export class Hit extends State {
     }
     handleInput(input){
         if(this.game.player.frameX >= 10 && this.game.player.onGround()){
-            this.game.player.setState(states.RUNNING_RIGHT);
+            this.game.player.setState(states.IDLE);
         } else if(this.game.player.frameX >= 10 && !this.game.player.onGround()){
             this.game.player.setState(states.FALLING_RIGHT);
         }
@@ -221,18 +225,15 @@ export class Attacking extends State {
             this.game.player.frameY = 0;
     }
     handleInput(input){
+        if(this.game.player.frameX >= 11 && this.game.player.onGround()){
+            this.game.player.setState(states.IDLE);
+        } 
         if(this.game.player.spriteDirection === this.game.player.directions[0]){
-            if(this.game.player.frameX >= 11 && this.game.player.onGround()){
-                this.game.player.setState(states.IDLE_LEFT);
-            } 
-            else if(this.game.player.frameX >= 11 && !this.game.player.onGround()){
+            if(this.game.player.frameX >= 11 && !this.game.player.onGround()){
                 this.game.player.setState(states.FALLING_LEFT);
             }
         } else if(this.game.player.spriteDirection === this.game.player.directions[1]){
-            if(this.game.player.frameX >= 11 && this.game.player.onGround()){
-                this.game.player.setState(states.IDLE_RIGHT);
-            } 
-            else if(this.game.player.frameX >= 11 && !this.game.player.onGround()){
+            if(this.game.player.frameX >= 11 && !this.game.player.onGround()){
                 this.game.player.setState(states.FALLING_RIGHT);
             }
         }

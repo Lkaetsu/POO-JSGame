@@ -25,7 +25,7 @@ class Layer {
         if(this.cameraY > this.height - this.cameraHeight) this.cameraY = this.height - this.cameraHeight;
     }
     draw(context){
-        context.drawImage(this.image, this.cameraX, this.cameraY, this.cameraWidth, this.cameraHeight, this.x, this.y, this.width, this.height);
+        context.drawImage(this.image, this.cameraX , this.cameraY , this.cameraWidth, this.cameraHeight, this.x, this.y, this.width, this.height);
     }
 }
 
@@ -34,7 +34,10 @@ export class Background {
         this.game = game;
         this.width = this.game.width;
         this.height = this.game.height;
-        this.layer1Image = document.getElementById('map1');
+        if(this.game.currentStage === this.game.stages[0])
+            this.layer1Image = document.getElementById('map1');
+        else if(this.game.currentStage === this.game.stages[1])
+            this.layer1Image = document.getElementById('map2');
         this.layer1 = new Layer(this.game, this.width, this.height, this.layer1Image);
         this.backgroundLayers = [this.layer1];
     }

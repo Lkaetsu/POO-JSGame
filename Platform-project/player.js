@@ -1,5 +1,4 @@
-import { IdleLeft, IdleRight, RunningLeft, RunningRight, JumpingLeft, JumpingRight, FallingLeft, FallingRight, Hit, Attacking } from "./playerStates.js";
-import { CollisionAnimation } from "./collisionAnimation.js";
+import { Idle, RunningLeft, RunningRight, JumpingLeft, JumpingRight, FallingLeft, FallingRight, Hit, Attacking } from "./playerStates.js";
 import { collision } from "./utils.js";
 
 export class Player {
@@ -13,7 +12,7 @@ export class Player {
         this.x = 0;
         this.y = 0;
         this.vy = 0;
-        this.weight = 0.8;
+        this.weight = 0.65;
         this.jumpHeightModifier = 0;
         this.image = player;
         this.frameX = 0;
@@ -24,23 +23,18 @@ export class Player {
         this.frameTimer = 0;
         this.vx = 0;
         this.maxVx = 2.5;
-        this.maxVy = 6;
+        this.maxVy = 8;
         this.attackSpeed = 3;
-        this.states = [new IdleLeft(this.game), new IdleRight(this.game), new RunningLeft(this.game), new RunningRight(this.game), new JumpingLeft(this.game), new JumpingRight(this.game), new FallingLeft(this.game), new FallingRight(this.game), new Hit(this.game), new Attacking(this.game)];
+        this.states = [new Idle(this.game), new RunningLeft(this.game), new RunningRight(this.game), new JumpingLeft(this.game), new JumpingRight(this.game), new FallingLeft(this.game), new FallingRight(this.game), new Hit(this.game), new Attacking(this.game)];
         this.currentState = null;
         this.directions = ['left','right'];
         this.spriteDirection = this.directions[1];
-        this.hasTouchedTheGround = false;
         this.hitbox = {
             x: this.x + this.width * 0.4,
             y: this.y + this.height * 0.4,
             width: this.width * 0.25,
             height: this.height * 0.55,
         }
-        // this.hitboxX = this.x + this.width * 0.25;
-        // this.hitboxY = this.y + this.height * 0.25;
-        // this.hitboxWidth = this.width * 0.4;
-        // this.hitboxHeight = this.height * 0.75;
     }
     update(input, deltaTime){
         console.log(this.onGround());
@@ -65,7 +59,6 @@ export class Player {
             this.jumpHeightModifier += 0.05;
         } else this.jumpHeightModifier = 0;
         // Collision box Movement
-        if(this.onGround())  this.hasTouchedTheGround = true;
         this.game.floorcollisions2D.forEach(collisionBlock => {
             collisionBlock.update();
             if (input.includes('d')) {
@@ -73,16 +66,7 @@ export class Player {
             } else if(input.includes('a')){
                 collisionBlock.vx = this.maxVx;
             } else  collisionBlock.vx = 0;
-            if(this.vy !== 0 && this.hasTouchedTheGround){
-                collisionBlock.vy = -this.vy;
-            } else collisionBlock.vy = 0;
-            if(this.onGround()){
-                collisionBlock.y = collisionBlock.initialY;
-                const offset = this.hitbox.y - this.y + this.hitbox.height;
-                this.y = collisionBlock.y - offset - 0.001;
-            }
-            this.checkForObjectCollisions(collisionBlock);
-            if(this.onGround())  this.y = collisionBlock.y;
+            this.handleObjectCollisions(collisionBlock);
         });
         // Attack Speed
         if(this.currentState === this.states[9]) {
@@ -105,7 +89,7 @@ export class Player {
     onGround(){
         let groundCollision = false;
         this.game.floorcollisions2D.forEach(collisionBlock => {
-            if(this.hitbox.y + this.hitbox.height >= collisionBlock.y){
+            if(collision({object1: this.hitbox, object2: collisionBlock}) && this.vy >= 0){
                 groundCollision = true;
             }
         });
@@ -142,17 +126,17 @@ export class Player {
             }
         })
     }
-    checkForObjectCollisions(collisionBlock) {
+    handleObjectCollisions(collisionBlock) {
         if(collision({object1: this.hitbox, object2: collisionBlock})){
             if(this.vy > 0){
                 this.vy = 0;
                 const offset = this.hitbox.y - this.y + this.hitbox.height;
-                this.y = collisionBlock.y - offset - 0.001;
+                this.y = collisionBlock.y - offset - 0.5;
             }
             if(this.vy < 0){
                 this.vy = 0;
                 const offset = this.hitbox.y - this.y;
-                this.y = collisionBlock.y + collisionBlock.height - offset + 0.001;
+                this.y = collisionBlock.y - collisionBlock.height - offset + 0.5;
             }
             // if(this.vx > 0){
             //     this.vx = 0;

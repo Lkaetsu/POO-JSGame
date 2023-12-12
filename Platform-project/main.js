@@ -15,7 +15,7 @@ window.addEventListener('load', function(){
             this.width = width;
             this.height = height;
             this.stages = ['map1','map2'];
-            this.currentStage = this.stages[0];
+            this.currentStage = this.stages[1];
             this.floorcollisions2D = [];
             this.background = new Background(this);
             this.player = new Player(this);
@@ -32,6 +32,10 @@ window.addEventListener('load', function(){
             this.lives = 3;
             this.player.currentState = this.player.states[1];
             this.player.currentState.enter();
+            this.music = music;
+            this.music.loop = true;
+            this.music.volume = 0.05;
+            this.music.play();
         }
         update(deltaTime){
             //Timer
@@ -48,7 +52,7 @@ window.addEventListener('load', function(){
         }
         draw(context){
             context.save();
-            context.scale(1.8,1.8);
+            context.scale(2,2);
             this.background.draw(context);
             this.player.draw(context);
             this.enemies.forEach(enemy =>{
