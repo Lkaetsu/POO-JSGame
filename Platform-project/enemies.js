@@ -9,8 +9,10 @@ class Enemy {
     }
     update(deltaTime){
         // Movement
-        this.x -= this.speedX + this.game.speed;
+        this.x -= this.speedX;
+        this.hitbox.x = this.x;
         this.y += this.speedY;
+        this.hitbox.y = this.y;
         if(this.frameTimer > this.frameInterval){
             this.frameTimer = 0;
             if(this.frameX < this.maxFrame) this.frameX++;
@@ -21,8 +23,8 @@ class Enemy {
         if(this.x + this.width < 0) this.markedForDeletion = true;
     }
     draw(context){
-        if(this.game.debug) context.strokeRect(this.x, this.y, this.width, this.height);
-        context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height, this.width, this.height, this.x, this.y, this.width, this.height);
+        if(this.game.debug) context.strokeRect(this.hitbox.x, this.hitbox.y, this.hitbox.width, this.hitbox.height);
+        context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height, this.width, this.height, this.x, this.y, this.hitbox.width, this.hitbox.height);
     }
     playerIsDetected(){
         return this.game.player.x <= this.x + this.detectionRange;
@@ -32,27 +34,34 @@ class Enemy {
     }
 }
 
-// export class FlyingEnemy extends Enemy {
-//     constructor(game){
-//         super();
-//         this.game = game;
-//         this.width = 60;
-//         this.height = 44;
-//         this.x = this.game.width + Math.random() * this.game.width * 0.5;
-//         this.y = Math.random() * this.game.height * 0.5;
-//         this.speedX = Math.random() + 1;
-//         this.speedY = 0;
-//         this.maxFrame = 5;
-//         this.image = document.getElementById('enemy_fly');
-//         this.angle = 0;
-//         this.va = Math.random() * 0.1 + 0.1;
-//     }
-//     update(deltaTime){
-//         super.update(deltaTime);
-//         this.angle += this.va;
-//         this.y += Math.sin(this.angle);
-//     }
-// }
+export class CrowEnemy extends Enemy {
+    constructor(game, x, y){
+        super();
+        this.game = game;
+        this.width = 128,4;
+        this.height = 128;
+        this.x = x - 50;
+        this.y = y - 80;
+        this.speedX = Math.random() - 1.5;
+        this.speedY = 0;
+        this.maxFrame = 4;
+        this.image = document.getElementById('enemy_crow');
+        this.angle = 0;
+        this.va = Math.random() * 0.1 + 0.1;
+        this.hitbox = {
+            x: this.x,
+            y: this.y,
+            width: this.width * 0.5,
+            height: this.height * 0.5,
+        };
+    }
+    update(deltaTime){
+        super.update(deltaTime);
+        console.log(this.speedX, this.speedY);
+        this.angle += this.va;
+        this.y += Math.sin(this.angle);
+    }
+}
 
 export class AxeKnightEnemy extends Enemy {
     constructor(game, x, y){
